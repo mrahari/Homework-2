@@ -28,22 +28,28 @@ int main()
     stackType<double> stack(100);
     ifstream infile;
     ofstream outfile;
- 
+    
+    //open the file
     infile.open("RpnData.txt");
-
+    
+    //if the file is currently not open, terminate the program
     if (!infile)
     {
         cout << "Cannot open the input file. "
              << "Program terminates!" << endl;
         return 1;
     }
-     
+    
+    //open the file the output will be printed in
     outfile.open("RpnOutput.txt");
 
     outfile << fixed << showpoint;
     outfile << setprecision(2); 
-
+    
+    //read in the characters from the file
     infile >> ch;
+    
+    //while the file is open evalutate the expression and print the results
     while (infile)
     {
         stack.initializeStack();
@@ -56,6 +62,7 @@ int main()
         infile >> ch; //begin processing the next expression
     } //end while 
 
+    // close both the input and output files
     infile.close();
     outfile.close();
 
@@ -63,7 +70,7 @@ int main()
 
 } //end main
 
-
+//function that evaluates the expression
 void evaluateExpression(ifstream& inpF, ofstream& outF, stackType<double>& stack,char& ch, bool& isExpOk)
 {
     double num;
@@ -81,7 +88,7 @@ void evaluateExpression(ifstream& inpF, ofstream& outF, stackType<double>& stack
             //push that number into the stack if the stack is not full
             if (!stack.isFullStack())
                 stack.push(num);
-               
+            //else terminate the program   
             else
             {
                 cout << "Stack overflow. "
@@ -97,7 +104,7 @@ void evaluateExpression(ifstream& inpF, ofstream& outF, stackType<double>& stack
 
         if (isExpOk) //if no error
         {
-        //read the character and write it in
+        //read the character and write it in a file
             inpF >> ch;
             outF << ch;
         //if the character is not a number write in a space else discard the expression
@@ -109,32 +116,38 @@ void evaluateExpression(ifstream& inpF, ofstream& outF, stackType<double>& stack
     } //end while (!= '=')
 } //end evaluateExpression
 
-
+// function that does the operations
 void evaluateOpr(ofstream& out, stackType<double>& stack,
               char& ch, bool& isExpOk)
 {
     double op1, op2;
-
+    
+    //if the stack is empty set isExpOk to false 
     if (stack.isEmptyStack())
     {
         out << " (Not enough operands)";
         isExpOk = false;
     }
+    //else proceed
     else
     {
+        //set op2 to the top value of the stack and pop the stack
         op2 = stack.top();
         stack.pop();
-
+        //if the stack is empty set isExpOk to false
         if (stack.isEmptyStack())
         {
             out << " (Not enough operands)";
             isExpOk = false;
         }
+        /else begin the calculation
         else
         {
+            //set op1 to the top value of the stack and pop the stack
             op1 = stack.top();
             stack.pop();
-
+            
+            //define the cases for each operations
             switch (ch)
             {
             case '+': 
@@ -155,6 +168,7 @@ void evaluateOpr(ofstream& out, stackType<double>& stack,
                     isExpOk = false;
                 }
                 break;
+            //if the character is not a valid operator, set isExpOk to false   
             default:  
                 out << " (Illegal operator)";
                 isExpOk = false;
@@ -163,9 +177,10 @@ void evaluateOpr(ofstream& out, stackType<double>& stack,
     } //end else
 } //end evaluateOpr
 
-
+//function that discards the expression
 void discardExp(ifstream& in, ofstream& out, char& ch)
 {
+    // discard all characters until '=' is reached
     while (ch != '=')
     {
         in.get(ch);
@@ -173,6 +188,7 @@ void discardExp(ifstream& in, ofstream& out, char& ch)
     }
 } //end discardExp
 
+//print the result
 void printResult(ofstream& outF, stackType<double>& stack,
                  bool isExpOk)
 {
