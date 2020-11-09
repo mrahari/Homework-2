@@ -69,7 +69,9 @@ public:
 	//               elements is deleted.
 
 	void listElements() {
+		// if the stack is empty, print out that's its empty
 		if (isEmptyStack()) cout << "The stack is empty";
+		// else iterate through the stack and print out all its elements
 		else {
 			for (int i = stackTop-1; i >= 0; i--) {
 				cout << list[i] << endl;
@@ -77,8 +79,11 @@ public:
 		}
 	}
 
+	// Function that changes the third value in a stack
 	void changeThirdValue(Type t) {
+		// If the stack does not have enough elements, print out it does not have have enough elements
 		if (stackTop < 3) cout << "Not enough elements";
+		// Else iterate through the stack. When the third element in the stack is reached, replace it with t
 		else {
 			for (int i = stackTop - 1; i >= 0; i--) {
 				if (i == 3) list[i-1] = t;
